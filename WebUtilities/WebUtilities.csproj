@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Zingabopp</Authors>
+    <Copyright>Copyright © Zingabopp 2019</Copyright>
+    <Platform>AnyCPU</Platform>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <DocumentationFile>WebUtilities.xml</DocumentationFile>
+    <Configurations>Debug;Release</Configurations>
+  </PropertyGroup>
+</Project>
