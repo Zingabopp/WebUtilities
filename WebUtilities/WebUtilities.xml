@@ -513,9 +513,6 @@
         <member name="M:WebUtilities.HttpClientWrapper.HttpContentWrapper.ReadAsStringAsync">
             <inheritdoc/>
         </member>
-        <member name="M:WebUtilities.HttpClientWrapper.HttpContentWrapper.ReadAsFileAsync(System.String,System.Boolean,System.Threading.CancellationToken)">
-            <inheritdoc/>
-        </member>
         <member name="M:WebUtilities.HttpClientWrapper.HttpContentWrapper.Dispose(System.Boolean)">
             <inheritdoc/>
         </member>
@@ -721,21 +718,6 @@
             <returns></returns>
             <exception cref="T:System.InvalidOperationException">Thrown when there is no content to read.</exception>
         </member>
-        <member name="M:WebUtilities.IWebResponseContent.ReadAsFileAsync(System.String,System.Boolean,System.Threading.CancellationToken)">
-            <summary>
-            Writes the content of the response to a file.
-            </summary>
-            <param name="filePath"></param>
-            <param name="overwrite"></param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-            <exception cref="T:System.ArgumentNullException">Thrown when the filename or response content are empty.</exception>
-            <exception cref="T:System.InvalidOperationException">Thrown when there is no content to read or overwrite is false and the file already exists.</exception>
-            <exception cref="T:System.IO.DirectoryNotFoundException">Thrown when the directory it's trying to save to doesn't exist.</exception>
-            <exception cref="T:System.IO.EndOfStreamException">Thrown when ContentLength is reported by the server and the file doesn't match it.</exception>
-            <exception cref="T:System.IO.IOException">Thrown when there's a problem writing the file.</exception>
-            <exception cref="T:System.OperationCanceledException">Thrown when the cancellationToken is triggered while downloading</exception>
-        </member>
         <member name="P:WebUtilities.IWebResponseContent.ContentType">
             <summary>
             Type of content reported by the response headers, if available.
@@ -825,6 +807,21 @@
             <param name="targetFilePath"></param>
             <param name="reportRate"></param>
             <returns></returns>
+        </member>
+        <member name="M:WebUtilities.Utilities.ReadAsFileAsync(WebUtilities.IWebResponseContent,System.String,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Attempts to download <see cref="T:WebUtilities.IWebResponseContent"/> to a file.
+            </summary>
+            <param name="content"></param>
+            <param name="filePath"></param>
+            <param name="overwrite"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.InvalidOperationException"></exception>
+            <exception cref="T:System.IO.IOException"></exception>
+            <exception cref="T:System.IO.EndOfStreamException">If the response content header reports a ContentLength, 
+                    the response content stream ended and the content wasn't the expected length.</exception>
         </member>
         <member name="T:WebUtilities.WebClientException">
             <summary>
@@ -953,21 +950,6 @@
         </member>
         <member name="M:WebUtilities.WebWrapper.WebClientContent.ReadAsStringAsync">
             <inheritdoc/>
-        </member>
-        <member name="M:WebUtilities.WebWrapper.WebClientContent.ReadAsFileAsync(System.String,System.Boolean,System.Threading.CancellationToken)">
-            <summary>
-            Downloads the provided HttpContent to the specified file.
-            </summary>
-            <param name="filePath"></param>
-            <param name="overwrite"></param>
-            <param name="cancellationToken"></param>
-            <exception cref="T:System.ArgumentNullException">Thrown when content or the filename are null or empty.</exception>
-            <exception cref="T:System.InvalidOperationException">Thrown when overwrite is false and a file at the provided path already exists.</exception>
-            <exception cref="T:System.IO.DirectoryNotFoundException">Thrown when the directory it's trying to save to doesn't exist.</exception>
-            <exception cref="T:System.IO.EndOfStreamException">Thrown when the downloaded file's size doesn't match the expected size</exception>
-            <exception cref="T:System.IO.IOException">Thrown when there's a problem writing the file.</exception>
-            <exception cref="T:System.OperationCanceledException"></exception>
-            <returns>Full path to the downloaded file</returns>
         </member>
         <member name="M:WebUtilities.WebWrapper.WebClientContent.Dispose(System.Boolean)">
             <inheritdoc/>

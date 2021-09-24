@@ -38,6 +38,7 @@ namespace WebUtilities.DownloadContainers
             {
                 if (value < 0)
                     throw new ArgumentOutOfRangeException(nameof(ProgressReportRate), $"{nameof(ProgressReportRate)} cannot be less than 0.");
+                _progressReportRate = value;
             }
         }
         /// <summary>

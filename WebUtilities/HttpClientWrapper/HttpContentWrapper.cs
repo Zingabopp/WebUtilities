@@ -59,75 +59,32 @@ namespace WebUtilities.HttpClientWrapper
         public long? ContentLength { get; protected set; }
 
         /// <inheritdoc/>
-        public async Task<byte[]> ReadAsByteArrayAsync()
+        public Task<byte[]> ReadAsByteArrayAsync()
         {
-            HttpContent content = _content ?? throw new InvalidOperationException("There is no content to read.");
-            return await content.ReadAsByteArrayAsync().ConfigureAwait(false);
+            HttpContent? content = _content;
+            if (content == null)
+                return Task.FromException<byte[]>(new InvalidOperationException("There is no content to read."));
+            return content.ReadAsByteArrayAsync();
         }
 
         /// <inheritdoc/>
         public Task<Stream> ReadAsStreamAsync()
         {
-            HttpContent content = _content ?? throw new InvalidOperationException("There is no content to read.");
+            HttpContent? content = _content;
+            if (content == null)
+                return Task.FromException<Stream>(new InvalidOperationException("There is no content to read."));
             return content.ReadAsStreamAsync();
         }
 
         /// <inheritdoc/>
-        public async Task<string> ReadAsStringAsync()
+        public Task<string> ReadAsStringAsync()
         {
-            HttpContent content = _content ?? throw new InvalidOperationException("There is no content to read.");
-            return await content.ReadAsStringAsync().ConfigureAwait(false);
+            HttpContent? content = _content;
+            if(content == null)
+                return Task.FromException<string>(new InvalidOperationException("There is no content to read."));
+            return content.ReadAsStringAsync();
         }
 
-
-        /// <inheritdoc/>
-        public async Task<string> ReadAsFileAsync(string filePath, bool overwrite, CancellationToken cancellationToken)
-        {
-            HttpContent? content = _content ?? throw new InvalidOperationException("There is no content to read.");
-            if (string.IsNullOrEmpty(filePath?.Trim()))
-                throw new ArgumentNullException(nameof(filePath), "filename cannot be null or empty for HttpContent.ReadAsFileAsync");
-            string pathname = Path.GetFullPath(filePath);
-            if (!overwrite && File.Exists(filePath))
-            {
-                throw new InvalidOperationException(string.Format("File {0} already exists.", pathname));
-            }
-
-            FileStream? fileStream = null;
-            try
-            {
-                fileStream = new FileStream(pathname, FileMode.Create, FileAccess.Write, FileShare.None);
-                if (cancellationToken.CanBeCanceled)
-                    cancellationToken.Register(() => fileStream.Close());
-                long expectedLength = Math.Max(0, _content?.Headers?.ContentLength ?? 0);
-
-                // TODO: Should this be awaited?
-                string downloadedPath = await content.CopyToAsync(fileStream).ContinueWith(
-                    (copyTask) =>
-                    {
-                        long fileStreamLength = fileStream.Length;
-
-                        fileStream.Close();
-                        if (expectedLength != 0 && fileStreamLength != ContentLength)
-                            throw new EndOfStreamException($"File content length of {fileStreamLength} didn't match expected size {expectedLength}");
-                        return pathname;
-                    });
-                return downloadedPath;
-            }
-            catch (ObjectDisposedException)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                throw;
-            }
-            catch (Exception)
-            {
-                if (fileStream != null)
-                {
-                    fileStream.Close();
-                }
-
-                throw;
-            }
-        }
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls

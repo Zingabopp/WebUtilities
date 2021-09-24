@@ -55,7 +55,7 @@ namespace WebUtilities.WebWrapper
                 if (_response == null)
                     return string.Empty;
                 var cType = _response.ContentType ?? string.Empty;
-                if (cType.Contains(";"))
+                if (cType.Contains(";")) // ex: "text/html; charset=UTF-8"
                     cType = cType.Substring(0, cType.IndexOf(";"));
                 return cType;
             }
@@ -65,91 +65,26 @@ namespace WebUtilities.WebWrapper
         /// <inheritdoc/>
         public async Task<byte[]> ReadAsByteArrayAsync()
         {
-            using (Stream stream = _response?.GetResponseStream() ?? throw new InvalidOperationException("There is no content to read."))
-            {
-                using (MemoryStream memStream = new MemoryStream())
-                {
-                    await stream.CopyToAsync(memStream, int.MaxValue).ConfigureAwait(false);
-                    return memStream.ToArray();
-                }
-            }
+            using Stream stream = _response?.GetResponseStream() ?? throw new InvalidOperationException("There is no content to read.");
+            using MemoryStream memStream = new MemoryStream();
+            await stream.CopyToAsync(memStream, int.MaxValue).ConfigureAwait(false);
+            return memStream.ToArray();
         }
         /// <inheritdoc/>
         public Task<Stream> ReadAsStreamAsync()
         {
-            return Task.Run(() => _response?.GetResponseStream() ?? throw new InvalidOperationException("There is no content to read."));
+            Stream? responseStream = _response?.GetResponseStream();
+            if (responseStream == null)
+                return Task.FromException<Stream>(new InvalidOperationException("There is no content to read."));
+
+            return Task.FromResult(responseStream);
         }
         /// <inheritdoc/>
         public async Task<string> ReadAsStringAsync()
         {
-            using (Stream stream = _response?.GetResponseStream() ?? throw new InvalidOperationException("There is no content to read."))
-            using (var sr = new StreamReader(stream))
-            {
-                return await sr.ReadToEndAsync().ConfigureAwait(false);
-            }
-        }
-
-        /// <summary>
-        /// Downloads the provided HttpContent to the specified file.
-        /// </summary>
-        /// <param name="filePath"></param>
-        /// <param name="overwrite"></param>
-        /// <param name="cancellationToken"></param>
-        /// <exception cref="ArgumentNullException">Thrown when content or the filename are null or empty.</exception>
-        /// <exception cref="InvalidOperationException">Thrown when overwrite is false and a file at the provided path already exists.</exception>
-        /// <exception cref="DirectoryNotFoundException">Thrown when the directory it's trying to save to doesn't exist.</exception>
-        /// <exception cref="EndOfStreamException">Thrown when the downloaded file's size doesn't match the expected size</exception>
-        /// <exception cref="IOException">Thrown when there's a problem writing the file.</exception>
-        /// <exception cref="OperationCanceledException"></exception>
-        /// <returns>Full path to the downloaded file</returns>
-        public async Task<string> ReadAsFileAsync(string filePath, bool overwrite, CancellationToken cancellationToken)
-        {
-            HttpWebResponse response = _response ?? throw new InvalidOperationException("There is no content to read.");
-            if (string.IsNullOrEmpty(filePath?.Trim()))
-                throw new ArgumentNullException(nameof(filePath), "filename cannot be null or empty for HttpContent.ReadAsFileAsync");
-            string pathname = Path.GetFullPath(filePath);
-            if (!overwrite && File.Exists(filePath))
-            {
-                throw new InvalidOperationException(string.Format("File {0} already exists.", pathname));
-            }
-
-            FileStream? fileStream = null;
-            try
-            {
-                fileStream = new FileStream(pathname, FileMode.Create, FileAccess.Write, FileShare.None);
-                var responseStream = response.GetResponseStream();
-                long expectedLength = 0;
-                if (response.ContentLength > 0)
-                    expectedLength = response.ContentLength;
-                // TODO: Timeouts don't seem to do anything.
-                //responseStream.ReadTimeout = 1;
-                //responseStream.WriteTimeout = 1;
-                string downloadedPath = string.Empty;
-                downloadedPath = await response.GetResponseStream().CopyToAsync(fileStream, 81920, cancellationToken).ContinueWith(
-                    (copyTask) =>
-                    {
-                        long fileStreamLength = fileStream.Length;
-
-                        fileStream.Close();
-
-                        if (expectedLength != 0 && fileStreamLength != ContentLength)
-                        {
-                            cancellationToken.ThrowIfCancellationRequested();
-                            throw new EndOfStreamException($"File content length of {fileStreamLength} didn't match expected size {expectedLength}");
-                        }
-                        return pathname;
-                    }).ConfigureAwait(false);
-                return downloadedPath;
-            }
-            catch
-            {
-                if (fileStream != null)
-                {
-                    fileStream.Close();
-                }
-
-                throw;
-            }
+            using Stream stream = _response?.GetResponseStream() ?? throw new InvalidOperationException("There is no content to read.");
+            using var sr = new StreamReader(stream);
+            return await sr.ReadToEndAsync().ConfigureAwait(false);
         }
 
         #region IDisposable Support

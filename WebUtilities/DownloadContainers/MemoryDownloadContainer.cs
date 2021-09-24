@@ -105,15 +105,13 @@ namespace WebUtilities.DownloadContainers
                     TriggerProgressChanged(actualBytesReceived, actualBytesReceived, progress);
                     return actualBytesReceived;
                 }
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    await ProcessContentStreamAsync(inputStream, memoryStream, progress, cancellationToken).ConfigureAwait(false);
-                    memoryStream.Seek(0, SeekOrigin.Begin);
-                    _data = memoryStream.ToArray();
-                    actualBytesReceived = memoryStream.Length;
-                    dataReceived = true;
-                    return actualBytesReceived;
-                }
+                using MemoryStream memoryStream = new MemoryStream();
+                await ProcessContentStreamAsync(inputStream, memoryStream, progress, cancellationToken).ConfigureAwait(false);
+                memoryStream.Seek(0, SeekOrigin.Begin);
+                _data = memoryStream.ToArray();
+                actualBytesReceived = memoryStream.Length;
+                dataReceived = true;
+                return actualBytesReceived;
             }
             catch
             {
