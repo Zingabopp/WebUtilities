@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,7 +18,7 @@ namespace WebUtilities
         /// <returns>A task that can be canceled, but never completed.</returns>
         public static Task AsTask(this CancellationToken cancellationToken)
         {
-            var tcs = new TaskCompletionSource<object>();
+            TaskCompletionSource<object>? tcs = new TaskCompletionSource<object>();
             cancellationToken.Register(() => tcs.TrySetCanceled(), false);
             return tcs.Task;
         }
@@ -38,6 +36,67 @@ namespace WebUtilities
         internal static string GetTimeoutMessage(Uri uri)
         {
             return $"Timeout occurred while waiting for {uri}";
+        }
+
+        /// <summary>
+        /// Attempts to download <see cref="IWebResponseContent"/> to a file.
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="filePath"></param>
+        /// <param name="overwrite"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="IOException"></exception>
+        /// <exception cref="EndOfStreamException">If the response content header reports a ContentLength, 
+        ///         the response content stream ended and the content wasn't the expected length.</exception>
+        public static async Task<string> ReadAsFileAsync(this IWebResponseContent content, string filePath, bool overwrite, CancellationToken cancellationToken)
+        {
+            if (content == null)
+                throw new ArgumentNullException(nameof(content));
+            if (string.IsNullOrWhiteSpace(filePath?.Trim()))
+                throw new ArgumentNullException(nameof(filePath), "filename cannot be null or empty for ReadAsFileAsync");
+            string pathname = Path.GetFullPath(filePath);
+            if (!overwrite && File.Exists(filePath))
+            {
+                throw new InvalidOperationException(string.Format("File {0} already exists.", pathname));
+            }
+
+            try
+            {
+                using FileStream fileStream = new FileStream(pathname, FileMode.Create, FileAccess.Write, FileShare.None);
+  
+                long expectedLength = Math.Max(0, content.ContentLength ?? 0);
+
+                using Stream? responseStream = await content.ReadAsStreamAsync().ConfigureAwait(false);
+                await responseStream.CopyToAsync(fileStream, 81920, cancellationToken).ConfigureAwait(false);
+
+                long fileStreamLength = fileStream.Length;
+
+                if (expectedLength != 0 && fileStreamLength != expectedLength)
+                    throw new EndOfStreamException($"File content length of '{fileStreamLength}' didn't match expected size '{expectedLength}'");
+
+                return pathname;
+            }
+            catch(OperationCanceledException)
+            {
+                throw;
+            }
+            catch (ObjectDisposedException)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                throw;
+            }
+            catch (SystemException ex)
+            {
+                // Security/UnauthorizedAccess Excepton from `new FileStream`
+                throw new IOException(ex.Message, ex);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

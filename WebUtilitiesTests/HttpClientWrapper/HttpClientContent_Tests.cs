@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using WebUtilities;
 using WebUtilities.HttpClientWrapper;
 using WebUtilities.WebWrapper;
@@ -14,7 +15,7 @@ namespace WebUtilitiesTests.HttpClientWrapperTests
         private static readonly string TestOutputPath = Path.GetFullPath(@"Output\WebClientContent_Tests");
 
         [TestMethod]
-        public void CanceledDownload()
+        public async Task CanceledDownload()
         {
             IWebClient client = new HttpClientWrapper();
             Uri uri = new Uri("http://releases.ubuntu.com/18.04.3/ubuntu-18.04.3-desktop-amd64.iso");
@@ -29,13 +30,12 @@ namespace WebUtilitiesTests.HttpClientWrapperTests
                 try
                 {
                     CancellationTokenSource readCts = new CancellationTokenSource(100);
-                    string thing = response.Content.ReadAsFileAsync(filePath, true, readCts.Token).Result;
+                    string thing = await response.Content.ReadAsFileAsync(filePath, true, readCts.Token);
                     Assert.Fail("Didn't throw exception");
                 }
-                catch (AggregateException ex)
+                catch (OperationCanceledException)
                 {
-                    if (!(ex.InnerException is OperationCanceledException))
-                        Assert.Fail("Wrong exception thrown.");
+                    // Success
                 }
                 catch (Exception)
                 {
@@ -44,30 +44,27 @@ namespace WebUtilitiesTests.HttpClientWrapperTests
             }
             cts.Dispose();
             client.Dispose();
+            await Task.Yield();
         }
 
         [TestMethod]
-        public void CanceledBeforeResponse()
+        public async Task CanceledBeforeResponse()
         {
-            IWebClient client = new WebClientWrapper();
+            IWebClient client = new HttpClientWrapper("WebUtilitiesTests/1.0.0");
             Uri uri = new Uri("http://releases.ubuntu.com/18.04.3/ubuntu-18.04.3-desktop-amd64.iso");
             CancellationTokenSource cts = new CancellationTokenSource(100);
             Directory.CreateDirectory(TestOutputPath);
             string filePath = Path.Combine(TestOutputPath, "CanceledBeforeResponse.iso");
             try
             {
-                using (IWebResponseMessage response = client.GetAsync(uri, cts.Token).Result)
-                {
-                    if (!response.IsSuccessStatusCode)
-                        Assert.Fail($"Error getting response from {uri}: {response.ReasonPhrase}");
-                    Assert.Fail("Didn't throw exception");
-
-                }
+                using IWebResponseMessage response = await client.GetAsync(uri, cts.Token);
+                if (!response.IsSuccessStatusCode)
+                    Assert.Fail($"Error getting response from {uri}: {response.ReasonPhrase}");
+                Assert.Fail("Didn't throw exception");
             }
-            catch (AggregateException ex)
+            catch (OperationCanceledException)
             {
-                if (!(ex.InnerException is OperationCanceledException))
-                    Assert.Fail("Wrong exception thrown.");
+                // Success
             }
             catch (Exception)
             {

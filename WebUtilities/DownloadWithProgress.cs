@@ -85,8 +85,8 @@ namespace WebUtilities
             TokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             CancellationToken token = TokenSource.Token;
             _destinationStream = targetStream;
-            using (IWebResponseMessage response = await WebClient.GetAsync(_downloadUri, token).ConfigureAwait(false))
-                await DownloadFileFromHttpResponseMessage(response, progress, token).ConfigureAwait(false);
+            using IWebResponseMessage response = await WebClient.GetAsync(_downloadUri, token).ConfigureAwait(false);
+            await DownloadFileFromHttpResponseMessage(response, progress, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace WebUtilities
         /// <returns></returns>
         public virtual Task StartDownload(Stream targetStream, CancellationToken cancellationToken)
         {
-            return StartDownload(targetStream, default(IProgress<DownloadProgress>), cancellationToken);
+            return StartDownload(targetStream, default, cancellationToken);
         }
 
         /// <summary>
@@ -112,8 +112,8 @@ namespace WebUtilities
             if (DownloadStarted) return;
             if (string.IsNullOrEmpty(_destinationFilePath))
                 throw new InvalidOperationException("No valid target found.");
-            using (FileStream targetStream = new FileStream(_destinationFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
-                await StartDownload(targetStream, progress, cancellationToken).ConfigureAwait(false);
+            using FileStream targetStream = new FileStream(_destinationFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
+            await StartDownload(targetStream, progress, cancellationToken).ConfigureAwait(false);
         }
 
         public virtual Task StartDownload(CancellationToken cancellationToken) => StartDownload(default(IProgress<DownloadProgress>), cancellationToken);
@@ -134,8 +134,8 @@ namespace WebUtilities
             IWebResponseContent content = response?.Content ?? throw new InvalidOperationException("Content is null.");
             long? totalBytes = content.ContentLength;
 
-            using (Stream contentStream = await content.ReadAsStreamAsync().ConfigureAwait(false))
-                await ProcessContentStream(totalBytes, contentStream, progress, cancellationToken).ConfigureAwait(false);
+            using Stream contentStream = await content.ReadAsStreamAsync().ConfigureAwait(false);
+            await ProcessContentStream(totalBytes, contentStream, progress, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>

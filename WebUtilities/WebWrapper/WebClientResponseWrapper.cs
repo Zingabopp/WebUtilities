@@ -16,7 +16,7 @@ namespace WebUtilities.WebWrapper
         /// <summary>
         /// Returns 0 if response was null and no status override was provided.
         /// </summary>
-        private int? _statusCodeOverride;
+        private readonly int? _statusCodeOverride;
 
         /// <inheritdoc/>
         public int StatusCode
@@ -66,7 +66,7 @@ namespace WebUtilities.WebWrapper
         /// <inheritdoc/>
         public IWebResponseContent? Content { get; protected set; }
 
-        private Dictionary<string, IEnumerable<string>> _headers;
+        private readonly Dictionary<string, IEnumerable<string>> _headers;
         /// <inheritdoc/>
         public ReadOnlyDictionary<string, IEnumerable<string>> Headers
         {

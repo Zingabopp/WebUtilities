@@ -83,6 +83,7 @@ namespace WebUtilities.WebWrapper
             if (timeout == 0)
                 timeout = Timeout;
             HttpWebRequest request = WebRequest.CreateHttp(uri);
+
             if (!string.IsNullOrEmpty(UserAgent))
                 request.UserAgent = UserAgent;
             CancellationTokenSource? timeoutSource = null;
@@ -98,28 +99,22 @@ namespace WebUtilities.WebWrapper
                 throw new OperationCanceledException($"GetAsync canceled for Uri {uri}", cancellationToken);
             bool wasCanceled = false;
             //bool timedOut = false;
+            CancellationTokenRegistration timeoutRegistration = default;
             try
             {
                 Task<WebResponse> getTask = request.GetResponseAsync(cancellationToken);
-                //var getTask = Task.Run(() =>
-                //{
-                //    return request.GetResponse(); // Have to use synchronous call because GetResponseAsync() doesn't respect Timeout
-                //});
-                //TODO: Need testing for cancellation token
-                if (cancellationToken.CanBeCanceled)
+
+                using CancellationTokenRegistration cancelRegistration = cancellationToken.Register(() =>
                 {
-                    cancellationToken.Register(() =>
-                    {
-                        request.Abort();
-                        wasCanceled = true;
-                    });
-                }
+                    request.Abort();
+                    wasCanceled = true;
+                });
                 cancellationToken.ThrowIfCancellationRequested();
                 if (timeout > 0)
                 {
                     timeoutSource = new CancellationTokenSource();
                     timeoutToken = timeoutSource.Token;
-                    timeoutToken.Register(() =>
+                    timeoutRegistration = timeoutToken.Register(() =>
                     {
                         request.Abort();
                         if (!wasCanceled)
@@ -192,6 +187,7 @@ namespace WebUtilities.WebWrapper
             }
             finally
             {
+                timeoutRegistration.Dispose();
                 if (timeoutSource != null)
                 {
                     timeoutSource.Dispose();

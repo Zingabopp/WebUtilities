@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 
 namespace WebUtilities
 {
-#pragma warning disable CA2237 // Mark ISerializable types with serializable
     /// <summary>
     /// Exception that wraps almost all <see cref="Exception"/>s thrown by an <see cref="IWebClient"/>.
     /// </summary>
     public class WebClientException : InvalidOperationException
-#pragma warning restore CA2237 // Mark ISerializable types with serializable
     {
         /// <summary>
         /// The <see cref="FaultedResponse"/>.
