@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net;
 using System.Collections.ObjectModel;
-using System.Threading;
+using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace WebUtilities.WebWrapper
 {
@@ -28,7 +26,7 @@ namespace WebUtilities.WebWrapper
             _headers = new Dictionary<string, IEnumerable<string>>();
             if (_response?.Headers != null)
             {
-                foreach (var headerKey in _response.Headers.AllKeys)
+                foreach (string? headerKey in _response.Headers.AllKeys)
                 {
                     _headers.Add(headerKey, new string[] { _response.Headers[headerKey] });
                 }
@@ -54,7 +52,7 @@ namespace WebUtilities.WebWrapper
             {
                 if (_response == null)
                     return string.Empty;
-                var cType = _response.ContentType ?? string.Empty;
+                string? cType = _response.ContentType ?? string.Empty;
                 if (cType.Contains(";")) // ex: "text/html; charset=UTF-8"
                     cType = cType.Substring(0, cType.IndexOf(";"));
                 return cType;
@@ -83,7 +81,7 @@ namespace WebUtilities.WebWrapper
         public async Task<string> ReadAsStringAsync()
         {
             using Stream stream = _response?.GetResponseStream() ?? throw new InvalidOperationException("There is no content to read.");
-            using var sr = new StreamReader(stream);
+            using StreamReader? sr = new StreamReader(stream);
             return await sr.ReadToEndAsync().ConfigureAwait(false);
         }
 

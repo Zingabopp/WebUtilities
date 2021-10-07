@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net;
-using System.Text;
 
 namespace WebUtilities.WebWrapper
 {
@@ -55,7 +54,7 @@ namespace WebUtilities.WebWrapper
                     webException = wException;
                 else
                     webException = new WebException($"The remote server returned an error: ({(int)_response.StatusCode}) {ReasonPhrase}.");
-                var faultedResponse = new FaultedResponse(this);
+                FaultedResponse? faultedResponse = new FaultedResponse(this);
                 _response.Dispose();
                 _response = null;
                 throw new WebClientException(webException.Message, webException, faultedResponse);
@@ -89,12 +88,12 @@ namespace WebUtilities.WebWrapper
             _statusCodeOverride = statusCodeOverride;
             Exception = exception;
             RequestUri = request.RequestUri;
-            if(response != null)
+            if (response != null)
                 Content = new WebClientContent(response);
             _headers = new Dictionary<string, IEnumerable<string>>();
             if (_response?.Headers != null)
             {
-                foreach (var headerKey in _response.Headers.AllKeys)
+                foreach (string? headerKey in _response.Headers.AllKeys)
                 {
                     _headers.Add(headerKey, new string[] { _response.Headers[headerKey] });
                 }

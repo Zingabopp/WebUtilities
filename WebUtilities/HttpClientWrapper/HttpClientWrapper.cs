@@ -98,9 +98,9 @@ namespace WebUtilities.HttpClientWrapper
                 timeout = Timeout;
             if (timeout == 0)
                 timeout = (int)client.Timeout.TotalMilliseconds;
-            using var timeoutCts = new CancellationTokenSource(timeout);
-            var timeoutToken = timeoutCts.Token;
-            using var linkedSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutToken);
+            using CancellationTokenSource? timeoutCts = new CancellationTokenSource(timeout);
+            CancellationToken timeoutToken = timeoutCts.Token;
+            using CancellationTokenSource? linkedSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutToken);
             HttpResponseMessage? response = null;
             try
             {
@@ -145,13 +145,11 @@ namespace WebUtilities.HttpClientWrapper
             }
         }
 
-        
-
-        HttpResponseWrapper HandleResponse(HttpResponseMessage response, Uri uri, CancellationToken cancellationToken)
+        private HttpResponseWrapper HandleResponse(HttpResponseMessage response, Uri uri, CancellationToken cancellationToken)
         {
             try
             {
-                var wrappedResponse = new HttpResponseWrapper(response, uri);
+                HttpResponseWrapper? wrappedResponse = new HttpResponseWrapper(response, uri);
                 if (ErrorHandling == ErrorHandling.ThrowOnException)
                     wrappedResponse.EnsureSuccessStatusCode();
                 return wrappedResponse;
@@ -216,7 +214,7 @@ namespace WebUtilities.HttpClientWrapper
         {
             if (string.IsNullOrEmpty(url))
                 throw new ArgumentNullException(nameof(url), $"Url cannot be null for GetAsync()");
-            var urlAsUri = new Uri(url);
+            Uri? urlAsUri = new Uri(url);
             return GetAsync(urlAsUri, timeout, cancellationToken);
         }
         /// <inheritdoc/>

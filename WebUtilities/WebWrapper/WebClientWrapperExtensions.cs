@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,12 +22,12 @@ namespace WebUtilities.WebWrapper
             {
                 try
                 {
-                    var response = await request.GetResponseAsync().ConfigureAwait(false); ;
+                    WebResponse? response = await request.GetResponseAsync().ConfigureAwait(false); ;
                     return response;
                 }
                 catch (WebException ex)
                 {
-                    
+
                     // WebException is thrown when request.Abort() is called,
                     // but there may be many other reasons,
                     // propagate the WebException to the caller correctly

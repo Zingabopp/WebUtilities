@@ -66,7 +66,7 @@ namespace WebUtilities
             try
             {
                 using FileStream fileStream = new FileStream(pathname, FileMode.Create, FileAccess.Write, FileShare.None);
-  
+
                 long expectedLength = Math.Max(0, content.ContentLength ?? 0);
 
                 using Stream? responseStream = await content.ReadAsStreamAsync().ConfigureAwait(false);
@@ -79,7 +79,7 @@ namespace WebUtilities
 
                 return pathname;
             }
-            catch(OperationCanceledException)
+            catch (OperationCanceledException)
             {
                 throw;
             }

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 
 namespace WebUtilities.HttpClientWrapper
 {
@@ -44,16 +42,16 @@ namespace WebUtilities.HttpClientWrapper
         {
             try
             {
-                if(_response == null)
+                if (_response == null)
                     throw new WebClientException("Response is null.");
                 if (!_response.IsSuccessStatusCode)
                 {
                     HttpRequestException httpException;
-                    if(((int)_response.StatusCode) > 0)
+                    if (((int)_response.StatusCode) > 0)
                         httpException = new HttpRequestException($"The remote server returned an error: ({(int)_response.StatusCode}) {_response.ReasonPhrase}.");
                     else
                         httpException = new HttpRequestException($"Error getting a response: {_response.ReasonPhrase}.");
-                    var faultedResponse = new FaultedResponse(this);
+                    FaultedResponse? faultedResponse = new FaultedResponse(this);
                     _response.Dispose();
                     _response = null;
                     throw new WebClientException(httpException.Message, httpException, faultedResponse);
@@ -61,7 +59,7 @@ namespace WebUtilities.HttpClientWrapper
             }
             catch (HttpRequestException ex)
             {
-                var faultedResponse = new FaultedResponse(this);
+                FaultedResponse? faultedResponse = new FaultedResponse(this);
                 _response?.Dispose();
                 _response = null;
                 throw new WebClientException(ex.Message, ex, faultedResponse);
@@ -92,12 +90,12 @@ namespace WebUtilities.HttpClientWrapper
             _statusCodeOverride = statusCodeOverride;
             Exception = exception;
             RequestUri = requestUri;
-            if(response?.Content != null)
+            if (response?.Content != null)
                 Content = new HttpContentWrapper(response.Content);
             _headers = new Dictionary<string, IEnumerable<string>>();
             if (_response?.Headers != null)
             {
-                foreach (var header in _response.Headers)
+                foreach (KeyValuePair<string, IEnumerable<string>> header in _response.Headers)
                 {
                     _headers.Add(header.Key, header.Value);
                 }

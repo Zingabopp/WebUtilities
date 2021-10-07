@@ -141,7 +141,7 @@ namespace WebUtilities.DownloadContainers
             return new MemoryStream(_data);
         }
 
-        bool disposed;
+        private bool disposed;
         /// <summary>
         /// Disposes this <see cref="MemoryDownloadContainer"/>.
         /// </summary>

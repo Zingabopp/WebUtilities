@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net;
-using System.Net.Http;
 using System.Collections.ObjectModel;
-using System.Threading;
+using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace WebUtilities.HttpClientWrapper
 {
@@ -27,7 +24,7 @@ namespace WebUtilities.HttpClientWrapper
             _headers = new Dictionary<string, IEnumerable<string>>();
             if (_content?.Headers != null)
             {
-                foreach (var header in _content.Headers)
+                foreach (KeyValuePair<string, IEnumerable<string>> header in _content.Headers)
                 {
                     _headers.Add(header.Key, header.Value);
                 }
@@ -80,7 +77,7 @@ namespace WebUtilities.HttpClientWrapper
         public Task<string> ReadAsStringAsync()
         {
             HttpContent? content = _content;
-            if(content == null)
+            if (content == null)
                 return Task.FromException<string>(new InvalidOperationException("There is no content to read."));
             return content.ReadAsStringAsync();
         }

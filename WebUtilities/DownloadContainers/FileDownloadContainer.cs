@@ -35,7 +35,7 @@ namespace WebUtilities.DownloadContainers
         /// <exception cref="ArgumentNullException"></exception>
         public FileDownloadContainer(string filePath, bool overwrite = true, bool deleteOnDispose = true)
         {
-            if(string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(filePath), "filePath cannot be null.");
+            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(filePath), "filePath cannot be null.");
             FilePath = filePath;
             Overwrite = overwrite;
             DeleteOnDispose = deleteOnDispose;
@@ -154,7 +154,7 @@ namespace WebUtilities.DownloadContainers
             Dispose(false);
         }
 
-        bool disposed;
+        private bool disposed;
         /// <summary>
         /// Disposes of the <see cref="FileDownloadContainer"/>, deleting the file.
         /// </summary>
