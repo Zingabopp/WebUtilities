@@ -47,14 +47,19 @@ namespace WebUtilities.Mock.MockClient
         public MockResponse(string? mockDataPath, MockResponseData? responseData, Uri requestUri, Exception? exception = null)
         {
             RequestUri = requestUri;
+
+            if (responseData != null)
+            {
+                StatusCode = responseData.StatusCode;
+                Content = new MockContent(mockDataPath, responseData);
+            }
             Exception = exception;
-            if(exception != null)
+            if(exception == null)
             {
                 if (mockDataPath == null)
                     throw new ArgumentNullException(nameof(mockDataPath));
                 if (responseData == null)
                     throw new ArgumentNullException(nameof(responseData));
-                Content = new MockContent(mockDataPath, responseData);
                 _headers = responseData.ResponseHeaders;
             }
         }

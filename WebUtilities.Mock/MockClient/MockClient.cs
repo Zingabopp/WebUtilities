@@ -90,7 +90,7 @@ namespace WebUtilities.Mock.MockClient
         /// <inheritdoc/>
         public async Task<IWebResponseMessage> GetAsync(Uri uri, int timeout, CancellationToken cancellationToken)
         {
-            string path = _filenameFactory(uri);
+            string path = Path.Combine(_responsePath, _filenameFactory(uri));
             string responseDataPath = path + ".mock";
             MockResponseData? responseData = null;
             Exception? exception = null;
@@ -101,7 +101,7 @@ namespace WebUtilities.Mock.MockClient
                     IWebResponseMessage? response = await _recordingClient.GetAsync(uri, timeout, cancellationToken);
                     responseData = new MockResponseData(response);
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
-                    await File.WriteAllTextAsync(responseDataPath, JsonConvert.SerializeObject(responseData));
+                    await File.WriteAllTextAsync(responseDataPath, JsonConvert.SerializeObject(responseData, Formatting.Indented));
                     if (response.Content != null)
                         await response.Content.ReadAsFileAsync(path, true, CancellationToken.None);
                 }
