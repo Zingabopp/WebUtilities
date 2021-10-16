@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31702.278
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31808.319
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebUtilities", "WebUtilities\WebUtilities.csproj", "{0DC5D10D-1ED6-431E-AC47-6D8398391193}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebUtilitiesTests", "WebUtilitiesTests\WebUtilitiesTests.csproj", "{7440B7DB-320C-40A3-8487-A7A0107B0B08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUtilities.Mock", "WebUtilities.Mock\WebUtilities.Mock.csproj", "{A3BA3E3D-DFD4-4E2D-BB5D-3F9A1FED06C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{7440B7DB-320C-40A3-8487-A7A0107B0B08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7440B7DB-320C-40A3-8487-A7A0107B0B08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7440B7DB-320C-40A3-8487-A7A0107B0B08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3BA3E3D-DFD4-4E2D-BB5D-3F9A1FED06C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3BA3E3D-DFD4-4E2D-BB5D-3F9A1FED06C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3BA3E3D-DFD4-4E2D-BB5D-3F9A1FED06C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3BA3E3D-DFD4-4E2D-BB5D-3F9A1FED06C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
