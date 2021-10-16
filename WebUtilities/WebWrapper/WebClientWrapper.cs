@@ -226,44 +226,6 @@ namespace WebUtilities.WebWrapper
             //case WebExceptionStatus.RequestProhibitedByProxy:
         }
 
-        #region GetAsyncOverloads
-
-        /// <inheritdoc/>
-        public Task<IWebResponseMessage> GetAsync(Uri uri)
-        {
-            return GetAsync(uri, 0, CancellationToken.None);
-        }
-
-        /// <inheritdoc/>
-        public Task<IWebResponseMessage> GetAsync(Uri uri, CancellationToken cancellationToken)
-        {
-            return GetAsync(uri, 0, cancellationToken);
-        }
-        /// <inheritdoc/>
-        public Task<IWebResponseMessage> GetAsync(Uri uri, int timeout)
-        {
-            return GetAsync(uri, timeout, CancellationToken.None);
-        }
-        /// <inheritdoc/>
-        public Task<IWebResponseMessage> GetAsync(string url, int timeout, CancellationToken cancellationToken)
-        {
-            if (string.IsNullOrEmpty(url))
-                throw new ArgumentNullException(nameof(url), $"Url cannot be null for GetAsync()");
-            Uri urlAsUri = new Uri(url);
-            return GetAsync(urlAsUri, timeout, cancellationToken);
-        }
-        /// <inheritdoc/>
-        public Task<IWebResponseMessage> GetAsync(string url)
-        {
-            return GetAsync(url, 0, CancellationToken.None);
-        }
-        /// <inheritdoc/>
-        public Task<IWebResponseMessage> GetAsync(string url, CancellationToken cancellationToken)
-        {
-            return GetAsync(url, 0, cancellationToken);
-        }
-        #endregion
-
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 

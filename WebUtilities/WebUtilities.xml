@@ -4,6 +4,80 @@
         <name>WebUtilities</name>
     </assembly>
     <members>
+        <member name="T:WebUtilities.ClientExtensions">
+            <summary>
+            Extension methods for IWebClient
+            </summary>
+        </member>
+        <member name="M:WebUtilities.ClientExtensions.GetAsync(WebUtilities.IWebClient,System.Uri)">
+            <summary>
+            Send a GET request to the specified Uri as an asynchronous operation.
+            </summary>
+            <param name="client"></param>
+            <param name="uri"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException">The provided Uri is null.</exception>
+            <exception cref="T:WebUtilities.WebClientException">Thrown when an error occurs in the web client or the request times out.</exception>
+        </member>
+        <member name="M:WebUtilities.ClientExtensions.GetAsync(WebUtilities.IWebClient,System.Uri,System.Threading.CancellationToken)">
+            <summary>
+            Send a GET request to the specified Uri as an asynchronous operation. If the provided CancellationToken is triggered, the operation is canceled.
+            </summary>
+            <param name="client"></param>
+            <param name="uri"></param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:System.ArgumentNullException">The provided Uri is null.</exception>
+            <exception cref="T:WebUtilities.WebClientException">Thrown when an error occurs in the web client or the request times out.</exception>
+            <returns></returns>
+        </member>
+        <member name="M:WebUtilities.ClientExtensions.GetAsync(WebUtilities.IWebClient,System.Uri,System.Int32)">
+            <summary>
+            Send a GET request to the specified Uri as an asynchronous operation. If the server doesn't respond inside the provided timeout (milliseconds), the operation is canceled.
+            </summary>
+            <param name="client"></param>
+            <param name="uri"></param>
+            <param name="timeout">Timeout in milliseconds</param>
+            <exception cref="T:System.ArgumentNullException">The provided Uri is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the specified <paramref name="timeout"/> is less than 0.</exception>
+            <exception cref="T:WebUtilities.WebClientException">Thrown when an error occurs in the web client or the request times out.</exception>
+            <returns></returns>
+        </member>
+        <member name="M:WebUtilities.ClientExtensions.GetAsync(WebUtilities.IWebClient,System.String)">
+            <summary>
+            Send a GET request to the specified Uri as an asynchronous operation.
+            </summary>
+            <param name="client"></param>
+            <param name="url"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException">The provided Uri is null.</exception>
+            <exception cref="T:System.UriFormatException">Thrown when a URI cannot be formed from the provided URL.</exception>
+            <exception cref="T:WebUtilities.WebClientException">Thrown when an error occurs in the web client or the request times out.</exception>
+        </member>
+        <member name="M:WebUtilities.ClientExtensions.GetAsync(WebUtilities.IWebClient,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Send a GET request to the specified Uri as an asynchronous operation. If the provided CancellationToken is triggered, the operation is canceled.
+            </summary>
+            <param name="client"></param>
+            <param name="url"></param>
+            <param name="cancellationToken"></param>
+            <exception cref="T:System.ArgumentNullException">The provided Uri is null.</exception>
+            <exception cref="T:System.UriFormatException">Thrown when a URI cannot be formed from the provided URL.</exception>
+            <exception cref="T:WebUtilities.WebClientException">Thrown when an error occurs in the web client or the request times out.</exception>
+            <returns></returns>
+        </member>
+        <member name="M:WebUtilities.ClientExtensions.GetAsync(WebUtilities.IWebClient,System.String,System.Int32)">
+            <summary>
+            Send a GET request to the specified Uri as an asynchronous operation. If the server doesn't respond inside the provided timeout (milliseconds), the operation is canceled.
+            </summary>
+            <param name="client"></param>
+            <param name="url"></param>
+            <param name="timeout">Timeout in milliseconds</param>
+            <exception cref="T:System.ArgumentNullException">The provided Uri is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the specified <paramref name="timeout"/> is less than 0.</exception>
+            <exception cref="T:System.UriFormatException">Thrown when a URI cannot be formed from the provided URL.</exception>
+            <exception cref="T:WebUtilities.WebClientException">Thrown when an error occurs in the web client or the request times out.</exception>
+            <returns></returns>
+        </member>
         <member name="T:WebUtilities.DownloadContainers.DownloadContainer">
             <summary>
             A container to house the contents of a web download. This is an abstract class.
@@ -452,24 +526,6 @@
         <member name="M:WebUtilities.HttpClientWrapper.HttpClientWrapper.GetAsync(System.Uri,System.Int32,System.Threading.CancellationToken)">
             <inheritdoc/>
         </member>
-        <member name="M:WebUtilities.HttpClientWrapper.HttpClientWrapper.GetAsync(System.Uri)">
-            <inheritdoc/>
-        </member>
-        <member name="M:WebUtilities.HttpClientWrapper.HttpClientWrapper.GetAsync(System.Uri,System.Threading.CancellationToken)">
-            <inheritdoc/>
-        </member>
-        <member name="M:WebUtilities.HttpClientWrapper.HttpClientWrapper.GetAsync(System.Uri,System.Int32)">
-            <inheritdoc/>
-        </member>
-        <member name="M:WebUtilities.HttpClientWrapper.HttpClientWrapper.GetAsync(System.String,System.Int32,System.Threading.CancellationToken)">
-            <inheritdoc/>
-        </member>
-        <member name="M:WebUtilities.HttpClientWrapper.HttpClientWrapper.GetAsync(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:WebUtilities.HttpClientWrapper.HttpClientWrapper.GetAsync(System.String,System.Threading.CancellationToken)">
-            <inheritdoc/>
-        </member>
         <member name="M:WebUtilities.HttpClientWrapper.HttpClientWrapper.Dispose(System.Boolean)">
             <summary>
             Disposes the wrapped <see cref="T:System.Net.Http.HttpClient"/>.
@@ -600,73 +656,6 @@
             <param name="timeout">Timeout in milliseconds</param>
             <param name="cancellationToken"></param>
             <exception cref="T:System.ArgumentNullException">The provided Uri is null.</exception>
-            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the specified <paramref name="timeout"/> is less than 0.</exception>
-            <exception cref="T:WebUtilities.WebClientException">Thrown when an error occurs in the web client or the request times out.</exception>
-            <exception cref="T:System.OperationCanceledException">The provided cancellationToken was triggered.</exception>
-            <returns></returns>
-        </member>
-        <member name="M:WebUtilities.IWebClient.GetAsync(System.Uri)">
-            <summary>
-            Send a GET request to the specified Uri as an asynchronous operation.
-            </summary>
-            <param name="uri"></param>
-            <returns></returns>
-            <exception cref="T:System.ArgumentNullException">The provided Uri is null.</exception>
-            <exception cref="T:WebUtilities.WebClientException">Thrown when an error occurs in the web client or the request times out.</exception>
-        </member>
-        <member name="M:WebUtilities.IWebClient.GetAsync(System.Uri,System.Threading.CancellationToken)">
-            <summary>
-            Send a GET request to the specified Uri as an asynchronous operation. If the provided CancellationToken is triggered, the operation is canceled.
-            </summary>
-            <param name="uri"></param>
-            <param name="cancellationToken"></param>
-            <exception cref="T:System.ArgumentNullException">The provided Uri is null.</exception>
-            <exception cref="T:WebUtilities.WebClientException">Thrown when an error occurs in the web client or the request times out.</exception>
-            <returns></returns>
-        </member>
-        <member name="M:WebUtilities.IWebClient.GetAsync(System.Uri,System.Int32)">
-            <summary>
-            Send a GET request to the specified Uri as an asynchronous operation. If the server doesn't respond inside the provided timeout (milliseconds), the operation is canceled.
-            </summary>
-            <param name="uri"></param>
-            <param name="timeout">Timeout in milliseconds</param>
-            <exception cref="T:System.ArgumentNullException">The provided Uri is null.</exception>
-            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the specified <paramref name="timeout"/> is less than 0.</exception>
-            <exception cref="T:WebUtilities.WebClientException">Thrown when an error occurs in the web client or the request times out.</exception>
-            <returns></returns>
-        </member>
-        <member name="M:WebUtilities.IWebClient.GetAsync(System.String)">
-            <summary>
-            Send a GET request to the specified Uri as an asynchronous operation.
-            </summary>
-            <param name="url"></param>
-            <exception cref="T:System.ArgumentNullException">The provided Url is null.</exception>
-            <exception cref="T:System.UriFormatException">Thrown when a URI cannot be formed from the provided URL.</exception>
-            <exception cref="T:WebUtilities.WebClientException">Thrown when an error occurs in the web client or the request times out.</exception>
-            <returns></returns>
-        </member>
-        <member name="M:WebUtilities.IWebClient.GetAsync(System.String,System.Threading.CancellationToken)">
-            <summary>
-            Send a GET request to the specified Uri as an asynchronous operation. If the provided CancellationToken is triggered, the operation is canceled.
-            </summary>
-            <param name="url"></param>
-            <param name="cancellationToken"></param>
-            <exception cref="T:System.ArgumentNullException">The provided Url is null.</exception>
-            <exception cref="T:System.UriFormatException">Thrown when a URI cannot be formed from the provided URL.</exception>
-            <exception cref="T:WebUtilities.WebClientException">Thrown when an error occurs in the web client or the request times out.</exception>
-            <exception cref="T:System.OperationCanceledException">The provided cancellationToken was triggered.</exception>
-            <returns></returns>
-        </member>
-        <member name="M:WebUtilities.IWebClient.GetAsync(System.String,System.Int32,System.Threading.CancellationToken)">
-            <summary>
-            Send a GET request to the specified Uri as an asynchronous operation. 
-            If the server doesn't respond inside the provided timeout (milliseconds) or the provided CancellationToken is triggered, the operation is canceled.
-            </summary>
-            <param name="url"></param>
-            <param name="timeout">Timeout in milliseconds</param>
-            <param name="cancellationToken"></param>
-            <exception cref="T:System.ArgumentNullException">The provided Url is null.</exception>
-            <exception cref="T:System.UriFormatException">Thrown when a URI cannot be formed from the provided URL.</exception>
             <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the specified <paramref name="timeout"/> is less than 0.</exception>
             <exception cref="T:WebUtilities.WebClientException">Thrown when an error occurs in the web client or the request times out.</exception>
             <exception cref="T:System.OperationCanceledException">The provided cancellationToken was triggered.</exception>
@@ -1043,24 +1032,6 @@
             <inheritdoc/>
         </member>
         <member name="M:WebUtilities.WebWrapper.WebClientWrapper.GetAsync(System.Uri,System.Int32,System.Threading.CancellationToken)">
-            <inheritdoc/>
-        </member>
-        <member name="M:WebUtilities.WebWrapper.WebClientWrapper.GetAsync(System.Uri)">
-            <inheritdoc/>
-        </member>
-        <member name="M:WebUtilities.WebWrapper.WebClientWrapper.GetAsync(System.Uri,System.Threading.CancellationToken)">
-            <inheritdoc/>
-        </member>
-        <member name="M:WebUtilities.WebWrapper.WebClientWrapper.GetAsync(System.Uri,System.Int32)">
-            <inheritdoc/>
-        </member>
-        <member name="M:WebUtilities.WebWrapper.WebClientWrapper.GetAsync(System.String,System.Int32,System.Threading.CancellationToken)">
-            <inheritdoc/>
-        </member>
-        <member name="M:WebUtilities.WebWrapper.WebClientWrapper.GetAsync(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:WebUtilities.WebWrapper.WebClientWrapper.GetAsync(System.String,System.Threading.CancellationToken)">
             <inheritdoc/>
         </member>
         <member name="M:WebUtilities.WebWrapper.WebClientWrapper.Dispose(System.Boolean)">
