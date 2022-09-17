@@ -101,7 +101,9 @@ namespace WebUtilities.Mock.MockClient
                     IWebResponseMessage? response = await _recordingClient.GetAsync(uri, timeout, cancellationToken);
                     responseData = new MockResponseData(response);
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
+                    // Write response metadata
                     await File.WriteAllTextAsync(responseDataPath, JsonConvert.SerializeObject(responseData, Formatting.Indented));
+                    // Write response content, if it exists
                     if (response.Content != null)
                         await response.Content.ReadAsFileAsync(path, true, CancellationToken.None);
                 }

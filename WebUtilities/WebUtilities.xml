@@ -681,6 +681,24 @@
             Any <see cref="T:System.Exception"/>s thrown are stored and returned in a <see cref="T:WebUtilities.IWebResponse"/> with empty content.
             </summary>
         </member>
+        <member name="T:WebUtilities.IWebClientFactory">
+            <summary>
+            Abstraction for an object that provides <see cref="T:WebUtilities.IWebClient"/>s
+            </summary>
+        </member>
+        <member name="M:WebUtilities.IWebClientFactory.GetDefaultClient">
+            <summary>
+            Returns the default <see cref="T:WebUtilities.IWebClient"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebUtilities.IWebClientFactory.GetWebClient(System.String)">
+            <summary>
+            Gets an <see cref="T:WebUtilities.IWebClient"/> for the given host.
+            </summary>
+            <param name="host"></param>
+            <returns></returns>
+        </member>
         <member name="T:WebUtilities.IWebResponseContent">
             <summary>
             An interface defining content returned with an <see cref="T:WebUtilities.IWebResponse"/>.
